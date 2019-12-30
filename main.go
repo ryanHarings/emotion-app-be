@@ -114,7 +114,7 @@ func main() {
 	router := gin.New()
 	// router.Use(gin.Logger())
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000", "https://ryanharings.github.io/emotion-app"},
+		AllowOrigins:     []string{"http://localhost:3000", "https://ryanharings.github.io", "https://ryanharings.github.io/emotion-app"},
 		AllowMethods:     []string{"PUT", "GET", "PATCH"},
 		AllowHeaders:     []string{"Origin"},
 		ExposeHeaders:    []string{"Content-Length"},
