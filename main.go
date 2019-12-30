@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	_ "github.com/heroku/x/hmetrics/onload"
 	_ "github.com/lib/pq"
@@ -24,6 +25,33 @@ func repeatHandler(r int) gin.HandlerFunc {
 		c.String(http.StatusOK, buffer.String())
 	}
 }
+
+func sendEmotions() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		type Emotion struct {
+			ID    int    `json:"id"`
+			Value string `json:"value"`
+			Color string `json:"color"`
+		}
+		/*emotions := [2]emotion struct{
+			{id: 1, value: "Sad"},
+			{id: 2, value: "Happy"}
+		}*/
+
+		emotions := []Emotion{{1, "Sad", "#4C8EE6"}, Emotion{2, "Happy", "#1FBF34"}, Emotion{3, "Anxious", "#999999"}}
+
+		c.JSON(http.StatusOK, emotions)
+	}
+}
+
+/*func sendEmotions(c *gin.Context) {
+	emotionOb := [
+		{id: 1, value: "Sad", color: "#4C8EE6"},
+		{id: 2, value: "Happy", color: "#1FBF34"}
+	]
+	c.Header("Content-Type", "application/json")
+	c.JSON(http.StatusOK, gin.H {emotionOb})
+ }*/
 
 func dbFunc(db *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -78,8 +106,24 @@ func main() {
 		log.Fatalf("Error opening database: %q", err)
 	}
 
+	// emotions, err := strconv.Atoi(tStr)
+	// if err != nil {
+	// 	log.Printf("Get request failed - Using default\n", err)
+	// }
+
 	router := gin.New()
-	router.Use(gin.Logger())
+	// router.Use(gin.Logger())
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowMethods:     []string{"PUT", "GET", "PATCH"},
+		AllowHeaders:     []string{"Origin"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		AllowOriginFunc: func(origin string) bool {
+			return origin == "https://github.com"
+		},
+		MaxAge: 12 * time.Hour,
+	}))
 	router.LoadHTMLGlob("templates/*.tmpl.html")
 	router.Static("/static", "static")
 
@@ -92,5 +136,15 @@ func main() {
 
 	router.GET("/db", dbFunc(db))
 
+	router.GET("/emotions", sendEmotions())
+
+	// router.OPTIONS("/emotions", preflight)
+
 	router.Run(":" + port)
 }
+
+// func preflight(c *gin.Context) {
+// 	c.Header("Access-Control-Allow-Origin", "*")
+// 	c.Header("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers")
+// 	c.JSON(http.StatusOK, struct{}{})
+// }
