@@ -1,4 +1,4 @@
-module github.com/heroku/go-getting-started
+module github.com/ryanHarings/emotion-app-be
 
 go 1.12
 

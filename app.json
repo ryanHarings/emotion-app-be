@@ -1,12 +1,12 @@
 {
-  "name": "Start on Heroku: Go",
-  "description": "Go Getting Started Example App",
+  "name": "Go, Heroku",
+  "description": "Emotion App",
   "keywords": [
-    "getting-started",
+    "emotion",
     "go",
-    "sample",
-    "example"
+    "health",
+    "wellness"
   ],
-  "website": "http://github.com/heroku/go-getting-started",
-  "repository": "http://github.com/heroku/go-getting-started"
+  "website": "http://github.com/ryanHarings/emotion-app",
+  "repository": "http://github.com/ryanHarings/emotion-app-be"
 }
